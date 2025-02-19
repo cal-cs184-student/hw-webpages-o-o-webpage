@@ -120,7 +120,10 @@
       sqrt(sample_rate) grid) and store each sample's color in the sample
       buffer. 5. Finally, we average the colors in resolve_to_buffer—instead of
       just one color like in Task 1—within each pixel to complete our
-      supersampling.
+      supersampling. As the sample rate increases, the edges of the triangle
+      appear smoother. By averaging the colors of all sub-samples within each
+      pixel, we achieve more gradual transitions along the edges, thereby
+      reducing the jagged look.
 
       <div style="display: flex; flex-direction: column; align-items: center">
         <table
@@ -138,8 +141,8 @@
           </tr>
           <tr>
             <td style="text-align: center">
-              <img src="task2_16" width="400px" />
-              <figcaption>Sample rate 4</figcaption>
+              <img src="img/task2_16.png" width="400px" />
+              <figcaption>Sample rate 16</figcaption>
             </td>
             <td style="text-align: center">
               <img src="lion.jpg" width="400px" />
@@ -149,67 +152,152 @@
         </table>
       </div>
       <h2>Task 3: Transforms</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Cubeman is surrendering ✋🤖🤚.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/box.png" width="400px" />
+              <figcaption>Task 3</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Task 4: Barycentric coordinates</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Barycentric coordinates provide a method for representing the position of
+      a point relative to the three vertices of a triangle. They enable linear
+      interpolation of values at the vertices, making them useful for defining
+      position, color, texture, and other attributes. The triangle we created in
+      the picture below has red, green, and blue as its respective vertex
+      colors; inside the triangle, the closer a point is to a vertex, the more
+      similar its color to the vertex’s color. And in the middle of the
+      triangle, where the point has an equal distance to three vertices, we can
+      see its color is a blend of red, green, and blue.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/task4.png" width="400px" />
+              <figcaption>Task 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/triangle.png" width="400px" />
+              <figcaption>Triangle</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Task 5: "Pixel sampling" for texture mapping</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Here we use pixel sampling to determine the texture color of a pixel. We
+      do so by finding each sample point's texture coordinates using barycentric
+      interpolation after confirming the point is inside the triangle using the
+      three line test. With each sample point's UV coordinates, we can find its
+      position in texture space; then, we use methods like sample_nearest and
+      sample_bilinear to get its color. In nearest neighbor sampling, we use the
+      color of the nearest texel directly; while in bilinear sampling, we blend
+      the colors of the four closest texels using linear interpolation. The
+      nearest sampling tends to produce sharp and distinct colors within each
+      pixel since it is determined by a single texel; this results in visible
+      transitions between pixels as their colors can differ significantly. For
+      bilinear sampling, since we interpolate between four texels, we get much
+      smoother transitions between colors, meaning the change between adjacent
+      pixels is more gradual. We may infer, then, that the difference between
+      these two methods becomes most apparent in areas where the texture
+      transitions between contrasting colors, or when the texture is viewed at
+      an angle or magnified.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/nearest_1_sample.png" width="400px" />
+              <figcaption>Nearest sampling at 1 sample per pixel</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/nearest_16samples.png" width="400px" />
+              <figcaption>Nearest sampling at 16 samples per pixel</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bilinear_1_sample.png" width="400px" />
+              <figcaption>Bilinear sampling at 1 sample per pixel</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bilinear_16_samples.png" width="400px" />
+              <figcaption>Bilinear sampling at 16 sample per pixel</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Level sampling is used for texture antialiasing; it is a method of
+      filtering before sampling and is cheaper compared to supersampling for
+      textures. The process of texture mapping is basically the same as in task
+      5, except that here we also need to find the UV coordinates of (x+1, y)
+      and (x, y+1), which helps us determine how quickly the texture coordinates
+      are changing and tells us which mipmap level to use. To compute the level
+      of our sample points we use the formula below.
+      <img src="img/task6equation.png" width="800px" />
+      We then need to address each combination between different pixel sample
+      methods and level sampling methods. Most of them are straightforward,
+      except for L_linear, where we need to compute the weighted sum of adjacent
+      miplevels. L_ZERO uses the zeroth mip level, which corresponds to the
+      original texture resolution. L_NEAREST selects the nearest mip level.
+      L_LINEAR interpolates between two adjacent mip levels by applying
+      P_NEAREST or P_LINEAR to each level and then computing a weighted sum.
+      More samples per pixel (supersampling) provides the strongest antialiasing
+      but has the highest computational and memory cost since we need to store
+      and process multiple samples for each pixel. Pixel sampling, depending on
+      a specific sampling method and sample rate, would also lead to good
+      antialiasing power in the cost of inefficiency in speed and memory usage.
+      P_NEAREST is faster but produces lower quality images with more aliasing,
+      while P_LINEAR produces smoother images by interpolating between pixels
+      but requires more computation time. Both methods use similar amounts of
+      memory. Level sampling (mipmaps) offers the best balance: it efficiently
+      handles texture aliasing by pre-filtering textures at different
+      resolutions, requiring less memory than supersampling and less computation
+      at runtime, while still maintaining good image quality. While it may not
+      provide the same level of antialiasing as supersampling, it has a good
+      balance for texture mapping compared to the previous two techniques.
 
-      <h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
-
-      <h2>Additional Notes (please remove)</h2>
-      <ul>
-        <li>
-          You can also add code if you'd like as so: <code>code code code</code>
-        </li>
-        <li>
-          If you'd like to add math equations,
-          <ul>
-            <li>
-              You can write inline equations like so: \( a^2 + b^2 = c^2 \)
-            </li>
-            <li>
-              You can write display equations like so: \[ a^2 + b^2 = c^2 \]
-            </li>
-          </ul>
-        </li>
-      </ul>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/L_ZERO and P_NEAREST.png" width="400px" />
+              <figcaption>L_ZERO and P_NEAREST</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/L_ZERO and P_LINEAR.png" width="400px" />
+              <figcaption>L_ZERO and P_LINEAR</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/L_NEAREST and P_NEAREST.png" width="400px" />
+              <figcaption>L_NEAREST and P_NEAREST</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/L_NEAREST and P_LINEAR.png" width="400px" />
+              <figcaption>L_NEAREST and P_LINEAR</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   </body>
 </html>
