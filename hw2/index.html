@@ -85,22 +85,38 @@
         >
           <tr>
             <td style="text-align: center">
-              <img src="teapot.png" width="400px" />
-              <figcaption>Caption goes here.</figcaption>
+              <img src="img/step0.png" width="400px" />
+              <figcaption>Step 0</figcaption>
             </td>
             <td style="text-align: center">
-              <img src="teapot.png" width="400px" />
-              <figcaption>Caption goes here.</figcaption>
+              <img src="img/step1.png" width="400px" />
+              <figcaption>Step 1</figcaption>
             </td>
           </tr>
           <tr>
             <td style="text-align: center">
-              <img src="teapot.png" width="400px" />
-              <figcaption>Caption goes here.</figcaption>
+              <img src="img/step2.png" width="400px" />
+              <figcaption>Step 2</figcaption>
             </td>
             <td style="text-align: center">
-              <img src="teapot.png" width="400px" />
-              <figcaption>Caption goes here.</figcaption>
+              <img src="img/step3.png" width="400px" />
+              <figcaption>Step 3</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/step4.png" width="400px" />
+              <figcaption>Step 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/step5.png" width="400px" />
+              <figcaption>Step 5</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/modifiedControl.png" width="400px" />
+              <figcaption>Modified Control points and t</figcaption>
             </td>
           </tr>
         </table>
@@ -118,6 +134,19 @@
       With this process, we get the final single point of (u,v); by evaluating
       the final single points of different combinations of (u,v), we can get the
       desired Bezier surface.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/part2.png" width="400px" />
+              <figcaption>Part 2</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
@@ -149,6 +178,23 @@
       normal at the vertex by considering the geometric importance of each
       adjacent face.
 
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/part3_without.png" width="400px" />
+              <figcaption>Without vertex normals</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/part3_with.png" width="400px" />
+              <figcaption>With vertex normals</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
       <h3>Part 4: Edge flip</h3>
       The edge flip operation is pretty straightforward but kind of tedious. We
       first see if either face is on the boundary by checking if either
@@ -162,6 +208,29 @@
       face pointers for halfedges, update halfedge for faces and edges, update
       halfedge for each vertices.
 
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/draft_4.png" width="400px" />
+              <figcaption>Part 4</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/before_4.png" width="400px" />
+              <figcaption>Before edge flips</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/after_4.png" width="400px" />
+              <figcaption>After edge flips</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
       <h3>Part 5: Edge split</h3>
       We don’t find splitting trickier than flipping; it is just a little more
       tedious with almost the same process. We created 1 new vertex, 2 new
@@ -169,6 +238,43 @@
       part 4, and the remaining work is just getting all the edges, halfedges,
       vertices, and faces, and updating their pointers using brute-force, as we
       still could not find any tricks to update them directly.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/draft5.png" width="400px" />
+              <figcaption>Part 5</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p51.png" width="400px" />
+              <figcaption>Before some edge splits</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p52.png" width="400px" />
+              <figcaption>After some edge splits</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p53.png" width="400px" />
+              <figcaption>
+                Before a combination of both edge splits and edge flips
+              </figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p54.png" width="400px" />
+              <figcaption>
+                After a combination of both edge splits and edge flips
+              </figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h3>Part 6: Loop subdivision for mesh upsampling</h3>
       We implemented Loop subdivision by first marking existing vertices and
