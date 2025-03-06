@@ -1,116 +1,211 @@
 <html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      h1 {
+        text-align: center;
+      }
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+      .container {
+        margin: 0 auto;
+        padding: 60px 20%;
+      }
 
-			figure {
-				text-align: center;
-			}
+      figure {
+        text-align: center;
+      }
 
-			img {
-				display: inline-block;
-			}
+      img {
+        display: inline-block;
+      }
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 2 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>CS184/284A Spring 2025 Homework 2 Write-Up</h1>
+      <div style="text-align: center">Names: Soren & Albert</div>
 
-		<br>
+      <br />
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+      Link to webpage: (TODO)
+      <a
+        href="https://cal-cs184-student.github.io/hw-webpages-o-o-webpage/hw2/index.html"
+        >https://cal-cs184-student.github.io/hw-webpages-o-o-webpage/hw2/index.html</a
+      >
 
-		<br>
-		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+      <br />
 
-		<figure>
-			<img src="teapot.png" alt="Teapot" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+      Link to GitHub repository: (TODO)
+      <a href="https://github.com/cal-cs184-student/sp25-hw1-o-o"
+        >https://github.com/cal-cs184-student/sp25-hw1-o-o</a
+      >
 
-		<!--
+      <figure>
+        <img src="teapot.png" alt="Teapot" style="width: 50%" />
+        <figcaption>Welcome!!!</figcaption>
+      </figure>
+
+      <!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
 
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+      <h2>Overview</h2>
+      In this assignment, we worked on De Casteljau algorithm for Bezier curves,
+      area-weighted vertex normals for Phong shading, edge flip, edge split, and
+      loop subdivision for generating smoother meshes. We encountered an
+      infinite loop bug while doing part 6, solved the bug by tracing back to
+      the flip function and adding validation steps.
 
-		<h2>Section I: Bezier Curves and Surfaces</h2>
+      <h2>Section I: Bezier Curves and Surfaces</h2>
 
-		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+      De Casteljau algorithm is a way to find points that lie on the Bezier
+      Curves. Since the evaluateStep function performs only one step of the de
+      Casteljau algorithm, what we do in this function is simply use linear
+      interpolation to compute the (n-1) intermediate control points given the
+      original n control points and t value, and return these (n-1) points. The
+      linear interpolation is performed between adjacent pairs of control points
+      using the formula (1-t)p₁ + tp₂, which gives us a point that is t of the
+      way from p₁ to p₂. This iteration finally gives us a single final point
+      given a specific t value that lies on the Bezier curve. In the end, when
+      we connect all the single final points we evaluated from the t values
+      ranging from 0 to 1, we get the desired Bezier curve.
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="teapot.png" width="400px" />
+              <figcaption>Caption goes here.</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="teapot.png" width="400px" />
+              <figcaption>Caption goes here.</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="teapot.png" width="400px" />
+              <figcaption>Caption goes here.</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="teapot.png" width="400px" />
+              <figcaption>Caption goes here.</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
-		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
+      We use the Separable 1D de Casteljau Algorithm to extend de Casteljau
+      algorithm to Bezier surfaces. Unlike using the original de Casteljau
+      algorithm to evaluate a Bezier curve, in which we are given a single
+      parameter t and a vector of 2D points, here we are given two parameters u
+      and v and a vector of vectors of 3D points. As the name “Separable 1D de
+      Casteljau Algorithm” suggests, we first evaluate the final single point of
+      each row using the parameter u, which we call the row point, and then
+      evaluate the final single point of these row points using the parameter v.
+      With this process, we get the final single point of (u,v); by evaluating
+      the final single points of different combinations of (u,v), we can get the
+      desired Bezier surface.
 
-		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+      <h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
-		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 3: Area-weighted vertex normals</h3>
+      To implement area-weighted vertex normals, we use the half-edge data
+      structure to efficiently traverse all faces incident to a vertex. The
+      implementation begins by initializing a zero vector, “accumulator,” to
+      accumulate the weighted normal contributions. Next, we iterate through all
+      non-boundary faces incident to the vertex using the half-edge structure.
+      This traversal is performed by starting at one outgoing half-edge from the
+      vertex (obtained via the halfedge() method which returns a HalfedgeCIter
+      since we're implementing a const function). The traversal continues by
+      moving to each adjacent face using h->twin()->next() and loops until we
+      return to the starting half-edge, effectively visiting every face
+      connected to our vertex. For each face encountered during traversal, we
+      first check if it's a boundary face. Boundary faces are skipped as these
+      virtual faces don't contribute to the normal. For non-boundary faces, we
+      extract the three vertex positions that form the triangle and calculate
+      two edge vectors from the current vertex to its neighbors. We then compute
+      the face normal using the cross product of these edges and add this vector
+      directly to the accumulator. This approach properly weights each face's
+      contribution proportionally to its area because the magnitude of the cross
+      product of two edges is already proportional to twice the triangle's area.
+      By simply accumulating these unnormalized normals, we ensure that larger
+      faces have proportionally greater influence on the final vertex normal.
+      Finally, we normalize the accumulated vector to return a unit normal
+      vector. This area-weighted approach creates smoother shading transitions
+      when using Phong shading, as it better approximates the true surface
+      normal at the vertex by considering the geometric importance of each
+      adjacent face.
 
-		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 4: Edge flip</h3>
+      The edge flip operation is pretty straightforward but kind of tedious. We
+      first see if either face is on the boundary by checking if either
+      e0->halfedge()->face()->isBoundary() or
+      e0->halfedge()->twin()->face()->isBoundary() is true; if either of them is
+      true, we simply return e0 as it could not be flipped. The remaining work
+      is just getting all the edges, halfedges, vertices, and faces, and
+      updating their pointers using brute-force, as we could not find any tricks
+      to update them directly. The order of updating is as follows: update
+      halfedge vertices to a and d, update next() pointers in CCW order, update
+      face pointers for halfedges, update halfedge for faces and edges, update
+      halfedge for each vertices.
 
-		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 5: Edge split</h3>
+      We don’t find splitting trickier than flipping; it is just a little more
+      tedious with almost the same process. We created 1 new vertex, 2 new
+      faces, 4 new edges, and 6 new halfedges. Checking boundary is the same as
+      part 4, and the remaining work is just getting all the edges, halfedges,
+      vertices, and faces, and updating their pointers using brute-force, as we
+      still could not find any tricks to update them directly.
 
-		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <h3>Part 6: Loop subdivision for mesh upsampling</h3>
+      We implemented Loop subdivision by first marking existing vertices and
+      edges, then calculating new positions using weighted averages. For
+      existing vertices, we applied the formula (1 - n * u) * original_position
+      + u * original_neighbor_position_sum, where u depends on vertex degree.
+      For edge midpoints, we used 3/8(A+B) + 1/8(C+D) where A, B are endpoints
+      and C, D are opposite vertices. After calculating positions, we split
+      original edges, marked new vertices, flipped appropriate edges connecting
+      new and old vertices, and finally updated all positions. The most
+      challenging debugging issue was an infinite loop during the second
+      subdivision, caused by improper maintenance of halfedge connectivity in
+      the flipEdge function. By adding validation steps and ensuring vertex
+      halfedge pointers always referenced valid outgoing halfedges, we resolved
+      this issue. Loop subdivision progressively smooths meshes with each
+      iteration. Sharp features like the teapot's spout and handle edges become
+      increasingly rounded because the weighting scheme averages vertex
+      positions with neighbors, diminishing the influence of original sharp
+      vertices. Pre-splitting edges along sharp features helps preserve them
+      better by introducing more control points before subdivision, giving the
+      algorithm more vertices to work with and reducing the "averaging
+      distance." When subdividing a standard cube, asymmetry develops after
+      multiple iterations because the initial diagonal triangulation creates
+      uneven connectivity across the cube. Since Loop subdivision weights
+      vertices based on connectivity, this asymmetry amplifies with each
+      subdivision step. By pre-processing the cube with strategic edge splits
+      and flips to create consistent connectivity patterns, we achieved more
+      symmetric subdivision results. This works because loop subdivision
+      maintains symmetry when the input mesh has symmetric connectivity
+      structure, demonstrating that the algorithm depends not just on geometry
+      but on the underlying mesh topology.
 
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
-		</div>
-	</body>
+      <h2>
+        (Optional) Section III: Potential Extra Credit - Art Competition: Model
+        something Creative
+      </h2>
+      Hello World!
+    </div>
+  </body>
 </html>
