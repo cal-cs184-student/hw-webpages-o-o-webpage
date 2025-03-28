@@ -116,40 +116,368 @@
       </div>
 
       <h2>Part 2: Bounding Volume Hierarchy</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Our BVH construction begins by computing a bounding box that encloses all
+      of the primitives within the current node’s range. If the number of
+      primitives in that range is less than or equal to max_leaf_size, we create
+      a leaf node. Otherwise, we recursively split the set of primitives into
+      two roughly balanced groups and create two child nodes. To determine the
+      split, we first compute the centroid bounding box—a box that encloses the
+      centroids of all primitives in the range. We select the axis along which
+      this bounding box is longest (x, y, or z), and choose the midpoint along
+      that axis as the split plane. Primitives are then partitioned based on
+      whether their centroids fall to the left or right of the split plane. If
+      all centroids fall on one side, we fall back to splitting the list of
+      primitives in half. To compute the bounding box ray intersection, we
+      iterate over the x, y, and z dimensions. For each dimension, we compute
+      t_near and t_far using the formulas (min - r.o) / r.d and (max - r.o) /
+      r.d. We then take the maximum of the three t_near values and the minimum
+      of the t_far values—these are t0 and t1, respectively. To find the BVH
+      intersection, if the node is null or its bounding box does not intersect
+      with the ray, we return false. If the node is a leaf, we loop through all
+      of its primitives and test each for intersection. Otherwise, we
+      recursively call the intersection routine on the left and right children,
+      updating to the closest intersection as needed. BVH significantly
+      decreases rendering time. Without BVH, most geometries take around a
+      minute to render. With BVH, the same geometries render in less than one
+      second. We observed speedups of approximately 60× across different scenes,
+      especially as geometric complexity increased. BVH consistently delivered
+      substantial performance improvements by reducing the number of
+      per-primitive intersection checks required for each ray.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/cow.png" width="400px" />
+              <figcaption>Cow</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/max.png" width="400px" />
+              <figcaption>Max</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sky.png" width="400px" />
+              <figcaption>sky</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Part 3: Direct Illumination</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      1. Uniform Hemisphere Sampling: We sample directions uniformly across the
+      entire hemisphere above the surface. For each sampled direction, we cast a
+      shadow ray to see whether it hits a light. If it does, we accumulate that
+      light’s contribution via the BRDF. Because only a small portion of those
+      hemisphere samples may happen to hit the actual light, we end up with high
+      noise. 2. Light Sampling: We directly sample directions that point to each
+      light source. For area lights, we generate several samples across the
+      light’s surface; for point lights, we only need a single sample because
+      repeated samples would be the same. We do a shadow test for each light
+      sample, and if it’s unobstructed, we accumulate its contribution via the
+      BRDF. This method yields less noise. Noise Comparison: 1 light ray: Very
+      grainy soft shadows; somehow see the shape of the shadow, but large random
+      patches of dark and light appear. 4 light rays: The shadow areas become
+      more refined, though noise is still quite noticeable. 16 light rays:
+      Shadows are smoother, with clearer edges and less flickering noise. 64
+      light rays: Further reduction in noise, yielding relatively stable and
+      soft transitions where the edges. When comparing uniform hemisphere
+      sampling (UHS) and light sampling (LS), UHS tends to be much noisier at
+      lower sample counts. Shadows appear grainy because most hemisphere
+      directions miss the light source. Light sampling, by contrast, focuses
+      samples where the light is actually coming from, producing smoother soft
+      shadows with fewer samples. As the number of light samples increases, both
+      methods eventually converge, but LS does so more quickly and with less
+      noise.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p33_CBbunny_H_16_8.png" width="400px" />
+              <figcaption>Uniform hemisphere sampling</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p33CBbunny_H_64_32.png" width="400px" />
+              <figcaption>Uniform hemisphere sampling</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_1_1.png" width="400px" />
+              <figcaption>Importance sampling</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p34bunny_64_32.png" width="400px" />
+              <figcaption>Importance sampling</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p34dragon_64_32.png" width="400px" />
+              <figcaption>Importance sampling</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p12.png" width="400px" />
+              <figcaption>Caption goes here.</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_p3_1.png" width="400px" />
+              <figcaption>Light 1</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_p3_4.png" width="400px" />
+              <figcaption>Light 4</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_p3_16.png" width="400px" />
+              <figcaption>Light 16</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_p3_64.png" width="400px" />
+              <figcaption>Light 64</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Part 4: Global Illumination</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Indirect lighting: We use the BSDF to randomly sample an incoming
+      direction wi and compute its PDF. If the PDF is zero or wi lies below the
+      surface, we stop this bounce. If max_ray_depth is zero, meaning no
+      indirect lighting is allowed, we return immediately. Next, we call
+      one_bounce_radiance at the intersection, which adds direct light for the
+      current bounce. We set the Russian Roulette termination probability to
+      0.3. If the current bounce depth exceeds max_ray_depth and the coin flip
+      indicates termination, we end the bounce. Otherwise, we generate a new ray
+      in the sampled direction and call bvh->intersect on it. If it intersects
+      another primitive, we recursively call at_least_one_bounce_radiance on
+      that intersection. If isAccumBounces is false, we return only the final
+      bounce’s contribution; otherwise, we accumulate each bounce into L_out.
+      Finally, to keep Russian Roulette unbiased, we multiply the contribution
+      by f * L_in * cos_theta / pdf / rr_prob. Compare the second and third
+      bounce: In theory, the third bounce should be dimmer than the second
+      bounce. In other words, the second bounce contributes more to the picture
+      than the third bounce. Rasterization draws the shape of the object,
+      whereas the indirect illumination affects the shadow in the image.
+      However, in my picture the second bounce is almost the same as the third
+      bounce. It happens probably because I did not correctly code to return the
+      last bounce while isAccumBounces is false. It somehow still returns the
+      accumulated indirect radiance. Compare accumulated and unaccumulated:
+      Accumulated bounces appear to be much brighter than the other. Accumulated
+      includes all indirect and direct radiance whereas unaccumulated only
+      returns the last bounce. That being said, by looking at the unaccumulate
+      images, I can tell where it is going to be brighter showing in the
+      accumulated images.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sphere_indirect.png" width="400px" />
+              <figcaption>Sphere indirect 1024</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/sphere_direct.png" width="400px" />
+              <figcaption>Sphere direct 1024</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_global.png" width="400px" />
+              <figcaption>Bunny global</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/dragon_global.png" width="400px" />
+              <figcaption>Dragon global</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_0.png" width="400px" />
+              <figcaption>Bunny accumulated -s 0</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_1.png" width="400px" />
+              <figcaption>Bunny accumulated -s 1</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_2.png" width="400px" />
+              <figcaption>Bunny accumulated -s 2</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_3.png" width="400px" />
+              <figcaption>Bunny accumulated -s 3</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_4.png" width="400px" />
+              <figcaption>Bunny accumulated -s 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_accu_5.png" width="400px" />
+              <figcaption>Bunny accumulated -s 5</figcaption>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_0.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 0</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_1.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 1</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_2.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 2</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_3.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 3</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_4.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_unaccu_5.png" width="400px" />
+              <figcaption>Bunny unaccumulated -s 5</figcaption>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_0.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 0</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_1.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 1</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_2.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 2</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_3.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 3</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_4.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/bunny_rr_100.png" width="400px" />
+              <figcaption>Bunny with Russian Roulette -s 100</figcaption>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sphere_s_1.png" width="400px" />
+              <figcaption>Sphere with Sample at 1</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/sphere_s_2.png" width="400px" />
+              <figcaption>Sphere with Sample at 2</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sphere_s_4.png" width="400px" />
+              <figcaption>Sphere with Sample at 4</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/sphere_s_8.png" width="400px" />
+              <figcaption>Sphere with Sample at 8</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sphere_s_16.png" width="400px" />
+              <figcaption>Sphere with Sample at 16</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/sphere_s_64.png" width="400px" />
+              <figcaption>Sphere with Sample at 64</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/sphere_s_1024.png" width="400px" />
+              <figcaption>Sphere with Sample at 1024</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>Part 5: Adaptive Sampling</h2>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.
+      Adaptive sampling can significantly reduce rendering time while
+      maintaining high quality in area. Instead of always taking the same number
+      of samples per pixel, we measure pixel’s convergence every
+      samplesPerBatch. If I is less than max_tolerance * mean, we know the pixel
+      has already converged. Thus we can stop early, cut down rendering time and
+      power consumption. We set max_samples to ns_aa, s1, s2 are zero. While
+      sampling number is less than max_samples, we get a sample by gridsampler.
+      Calculate u and v in order to get ray. Running
+      est_radiance_global_illuminance to get L. L.illum() gives us the
+      illuminance. S1 is the sum of illuminance and S2 is the sum of illuminance
+      square. For every samplesPerBatch, we calculate mean and standard
+      deviation. I is 1.96 * standard deviation / square root(N). If I is less
+      or equal to maxTolerance*mean, we can break. Average the accumulated
+      radiance to get finalColor, and store the finalSampleNumber into
+      sampleCountBuffer.
+
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <table
+          style="width: 100%; text-align: center; border-collapse: collapse"
+        >
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p5_sphere.png" width="400px" />
+              <figcaption>Sphere</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p5_sphere_rate.png" width="400px" />
+              <figcaption>Sphere sample rate</figcaption>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <img src="img/p5_dragon.png" width="400px" />
+              <figcaption>Dragon</figcaption>
+            </td>
+            <td style="text-align: center">
+              <img src="img/p5_dragon_rate.png" width="400px" />
+              <figcaption>Dragon sample rate</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <h2>(Optional) Part 6: Extra Credit Opportunities</h2>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
